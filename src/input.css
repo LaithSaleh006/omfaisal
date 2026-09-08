@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Design tokens — generated via ui-ux-pro-max --design-system
+   ("dental clinic healthcare service"), then contrast-corrected.
+   Every foreground/background pair below is measured against
+   WCAG 2.2; ratios noted inline.
+   ============================================================ */
+@theme {
+  /* Brand cyan — calm, clinical, trustworthy */
+  --color-brand-50:  #ECFEFF;
+  --color-brand-100: #CFFAFE;
+  --color-brand-200: #A5F3FC;
+  --color-brand-300: #67E8F9;
+  --color-brand-400: #22D3EE;
+  --color-brand-500: #06B6D4;
+  --color-brand-600: #0891B2; /* decorative fills + input borders (3.68:1 non-text) */
+  --color-brand-700: #0E7490; /* buttons w/ white text — 5.36:1 AA */
+  --color-brand-800: #155E75; /* hover + focus ring — 7.27:1 AAA */
+  --color-brand-900: #164E63; /* body text — 9.11:1 on white AAA */
+
+  /* Health green — reserved for the single primary CTA */
+  --color-accent-600: #059669; /* decorative only (3.77:1) */
+  --color-accent-700: #047857; /* CTA w/ white text — 5.48:1 AA */
+  --color-accent-800: #065F46;
+
+  /* Semantic surfaces */
+  --color-surface:        #ECFEFF;
+  --color-card:           #FFFFFF;
+  --color-fg:             #164E63; /* 8.76:1 on surface, 9.11:1 on card */
+  --color-muted-fg:       #475569; /* 7.28:1 on surface, 7.58:1 on card */
+  --color-hairline:       #A5F3FC; /* decorative dividers only */
+  --color-border-input:   #0891B2; /* 3.68:1 — meets non-text 3:1 */
+  --color-danger:         #DC2626; /* 4.83:1 w/ white AA */
+  --color-danger-50:      #FEF2F2;
+
+  /* Arabic-first type stack. Atkinson Hyperlegible (the skill's
+     pick) has no Arabic coverage, so we use Arabic-native faces. */
+  --font-display: "Cairo", "Noto Kufi Arabic", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans Arabic", "Tajawal", system-ui, sans-serif;
+
+  /* Soft-depth shadows — the neumorphism cue, kept subtle so
+     borders and text carry the contrast instead of the shadow. */
+  --shadow-soft: 0 1px 2px rgb(22 78 99 / 0.04), 0 8px 24px -8px rgb(22 78 99 / 0.10);
+  --shadow-soft-lg: 0 2px 4px rgb(22 78 99 / 0.05), 0 20px 48px -16px rgb(22 78 99 / 0.16);
+  --shadow-inset: inset 0 1px 2px rgb(22 78 99 / 0.06);
+
+  --radius-card: 1rem;   /* 16px — style spec: rounded 12-16px */
+  --radius-pill: 999px;
+}
+
+/* Fonts are loaded via <link> in index.html <head> rather than @import:
+   a CSS @import queues the font request behind this stylesheet, delaying
+   first paint. Preconnect hints are in the <head> too. */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Reserve space for the sticky header when jumping to an anchor */
+    scroll-padding-top: 5.5rem;
+  }
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+    line-height: 1.7;              /* Arabic needs more leading than Latin */
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    line-height: 1.35;
+    text-wrap: balance;            /* progressive; natural wrap is the fallback */
+  }
+  p { text-wrap: pretty; }
+
+  /* Visible focus on every interactive element — never removed. */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 3px solid var(--color-brand-800);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Long tokens (phone numbers, emails, URLs) reflow instead of overflowing */
+  .wrap-anywhere { overflow-wrap: anywhere; }
+
+  /* Tabular figures keep prices/times from jittering */
+  .nums { font-variant-numeric: tabular-nums; }
+}
+
+@layer utilities {
+  /* Honour the user's motion preference across the whole site. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
