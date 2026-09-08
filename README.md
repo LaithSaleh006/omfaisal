@@ -32,14 +32,37 @@ npm run dev          # rebuild on save
 ## البنية / Structure
 
 ```
-index.html                          # the whole page
-src/input.css                       # Tailwind entry + design tokens
-assets/css/site.css                 # compiled output (committed)
-assets/js/site.js                   # menu, carousel, form validation
-assets/img/favicon.svg
+index.html                     # الصفحة كاملة / the page markup
+assets/
+  css/site.css                 # التنسيقات الجاهزة (Tailwind مُجمَّع مسبقًا)
+  js/site.js                   # القائمة، السلايدر، تحقّق النموذج
+  img/
+    hero-clinic.svg            # رسم القسم الرئيسي — استبدله بصورة العيادة
+    doctor-1.svg … doctor-4.svg  # صور الأطباء المؤقتة
+    favicon.svg                # أيقونة التبويب
+src/input.css                  # مصدر Tailwind + متغيّرات التصميم
+package.json                   # أوامر البناء (للتعديل فقط)
 design-system/dental-clinic/
-  MASTER.md                         # design system + verified deviations
+  MASTER.md                    # نظام التصميم + سبب كل قرار
 ```
+
+### استبدال الصور / Replacing the images
+
+كل صورة ملف مستقل في `assets/img/`. لتضع صورة حقيقية، استبدل الملف
+واحفظ نفس الاسم — أو غيّر `src` في `index.html`. **المهم:** حدِّث
+`width` و `height` لتطابق أبعاد صورتك الحقيقية، وإلا سيقفز التصميم
+أثناء التحميل.
+
+```html
+<!-- قبل -->
+<img src="assets/img/doctor-1.svg" width="100" height="100" alt="...">
+<!-- بعد -->
+<img src="assets/img/doctor-1.jpg" width="800" height="800" alt="د. سامي الحديد">
+```
+
+الأيقونات الصغيرة (الهاتف، التقويم، النجوم…) تبقى داخل `index.html`
+عن قصد: هي ترث لون النص تلقائيًا، ولو صارت ملفات منفصلة لفقدت ذلك
+وأضافت طلبات تحميل بلا فائدة.
 
 ## الأقسام / Sections
 
@@ -76,8 +99,8 @@ This is a complete front end with **placeholder content**. Replace:
    JOD), address, phone, and email — in `index.html` **and** in the
    `Dentist` JSON-LD block in `<head>`.
 3. `<link rel="canonical">` and the Open Graph URL.
-4. Swap the inline SVG placeholders for real photos. Space is reserved with
-   `aspect-ratio`, so set `width`/`height` and there will be no layout shift.
+4. Swap the placeholder SVGs in `assets/img/` for real photos, updating each
+   `width`/`height` to the real dimensions so nothing shifts on load.
 5. Paste a Google Maps `<iframe>` into the map placeholder.
 6. Add an OG share image (`og:image`).
 
