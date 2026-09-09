@@ -9,3 +9,6 @@ Thumbs.db
 # Logs
 npm-debug.log*
 *.log
+
+# local build symlink
+coffee-shop/node_modules
