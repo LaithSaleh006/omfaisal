@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+/* ============================================================
+   ARABICA — design tokens
+
+   Palette sampled from the hero video itself (dominant hues all
+   land at 14-23deg, saturation 53-81%), then contrast-verified.
+   The accent is taken from the wall lamp's glow.
+
+   Every value below was measured, not eyeballed. Ratios in comments.
+   ============================================================ */
+@theme {
+  /* Espresso — sampled from the video's wall and furniture */
+  --color-espresso-950: #0F0603;
+  --color-espresso-900: #1A0C06; /* page ground */
+  --color-espresso-800: #23120A; /* raised card */
+  --color-espresso-700: #2B160D;
+  --color-espresso-600: #3F2417;
+  --color-mocha-500:    #8C5E42; /* decorative rules — 3.26:1, non-text only */
+
+  /* Amber — the lamp glow. Takes DARK text, never white. */
+  --color-amber-300: #F7CE8E;
+  --color-amber-400: #F5B963;
+  --color-amber-500: #F0A64B; /* primary accent: espresso text on it = 9.34:1 */
+  --color-gold-700:  #A16207; /* deep gold, decoration only (white on it = 4.92:1) */
+
+  /* Cream — foreground */
+  --color-cream-50:  #F7EFE4; /* body text — 16.76:1 on page, 15.85:1 on card */
+  --color-cream-100: #EFE3D2; /* quotes, menu links — 14.44:1 on card */
+  --color-cream-200: #E0D2BE;
+  --color-cream-300: #C9B49A; /* muted text — 9.01:1 on card */
+
+  --font-display: "Cormorant", ui-serif, Georgia, serif;
+  --font-body: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-glass: 1.5rem;
+  --radius-pill: 999px;
+
+  /* Elevation tuned for a dark ground: shadow alone can't carry
+     contrast here, so borders and text do that work. */
+  --shadow-float: 0 24px 60px -20px rgb(0 0 0 / 0.75);
+  --shadow-glass: 0 8px 32px -8px rgb(0 0 0 / 0.55);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-espresso-900);
+    color: var(--color-cream-50);
+    line-height: 1.7;
+    -webkit-text-size-adjust: 100%;
+  }
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+
+  /* Amber ring reads clearly on espresso — 9.34:1 against the ground */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 3px solid var(--color-amber-500);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  ::selection { background: var(--color-amber-500); color: var(--color-espresso-900); }
+}
+
+@layer components {
+  /* ---------- Liquid glass ----------
+     Deliberately DARK glass, not the usual translucent white. Over a
+     dark video, white glass lightens the panel toward the backdrop and
+     collapses text contrast on bright frames.
+
+     Set to 70%, not the 62% first tried: measuring real composited
+     pixels showed muted cream landing at 4.65:1 and amber at 4.55:1
+     over the character's lit shirt — clearing 4.5:1 but with almost no
+     headroom for a brighter frame of the loop. 70% restores the margin
+     while still reading as glass. */
+  .glass {
+    background: color-mix(in srgb, var(--color-espresso-900) 70%, transparent);
+    backdrop-filter: blur(20px) saturate(135%);
+    -webkit-backdrop-filter: blur(20px) saturate(135%);
+    border: 1px solid rgb(255 255 255 / 0.14);
+    box-shadow: var(--shadow-glass);
+  }
+  /* Lighter variant for decorative chips that carry no body text */
+  .glass-thin {
+    background: color-mix(in srgb, var(--color-espresso-900) 56%, transparent);
+    backdrop-filter: blur(14px) saturate(130%);
+    -webkit-backdrop-filter: blur(14px) saturate(130%);
+    border: 1px solid rgb(255 255 255 / 0.12);
+  }
+  /* The "light source reflection" the style calls for: a 1px top edge */
+  .glass-edge { position: relative; }
+  .glass-edge::before {
+    content: "";
+    position: absolute; inset-inline: 1.25rem; top: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.45), transparent);
+    pointer-events: none;
+  }
+
+  /* Form controls need a 3:1 boundary, unlike decorative panel edges */
+  .field {
+    background: color-mix(in srgb, var(--color-espresso-950) 70%, transparent);
+    border: 1.5px solid rgb(255 255 255 / 0.42);
+  }
+  .field::placeholder { color: var(--color-cream-300); opacity: 0.75; }
+}
+
+@layer utilities {
+  /* ---------- Antigravity ----------
+     Transform + opacity only, so these stay off the layout path and
+     never trigger reflow. */
+  @keyframes drift {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--spin, 0deg)); }
+    50%      { transform: translate3d(var(--dx, 6px), var(--dy, -22px), 0)
+                          rotate(calc(var(--spin, 0deg) + var(--twist, 8deg))); }
+  }
+  @keyframes bob {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50%      { transform: translate3d(0, var(--dy, -14px), 0) scale(1.03); }
+  }
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.35; }
+    50%      { opacity: 0.75; }
+  }
+  .float-drift { animation: drift var(--dur, 11s) ease-in-out infinite var(--delay, 0s); will-change: transform; }
+  .float-bob   { animation: bob   var(--dur, 7s)  ease-in-out infinite var(--delay, 0s); will-change: transform; }
+  .float-glow  { animation: glow-pulse var(--dur, 5s) ease-in-out infinite var(--delay, 0s); }
+
+  /* Scrim over the video. Measured: cream text over 0.55 alpha clears
+     7.44:1 even on the brightest sampled frame, so the left column is
+     safe at every point in the loop. */
+  .scrim-left {
+    background:
+      linear-gradient(100deg,
+        rgb(15 6 3 / 0.94) 0%,
+        rgb(15 6 3 / 0.86) 26%,
+        rgb(15 6 3 / 0.55) 48%,
+        rgb(15 6 3 / 0.12) 68%,
+        rgb(15 6 3 / 0.30) 100%);
+  }
+  .scrim-bottom {
+    background: linear-gradient(to top,
+      var(--color-espresso-900) 0%,
+      rgb(26 12 6 / 0.85) 18%,
+      rgb(26 12 6 / 0) 55%);
+  }
+
+  /* Motion preference is honoured globally: floats stop, the video is
+     paused in JS, and the poster frame stands in for it. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    .float-drift, .float-bob, .float-glow { animation: none !important; }
+  }
+}

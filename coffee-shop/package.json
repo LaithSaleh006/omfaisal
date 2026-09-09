@@ -1,0 +1,15 @@
+{
+  "name": "coffee-shop-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Antigravity coffee shop website — glassmorphism UI over a 3D animated hero video",
+  "scripts": {
+    "build": "tailwindcss -i ./src/input.css -o ./assets/css/site.css --minify",
+    "dev": "tailwindcss -i ./src/input.css -o ./assets/css/site.css --watch",
+    "serve": "python3 -m http.server 8080"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.14",
+    "tailwindcss": "^4.1.14"
+  }
+}
